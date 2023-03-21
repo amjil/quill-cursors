@@ -158,10 +158,31 @@ export default class QuillCursors {
     cursor.show();
 
     const containerRectangle = this._boundsContainer.getBoundingClientRect();
+    const [leaf, offset] = this.quill.getLeaf(endIndex);
+    const flag = (leaf.domNode.nodeType == 3) && (offset == leaf.domNode.length);
+    const sindex = flag ? endIndex - 1 : endIndex;
+    let bounds = flag ? this.quill.getBounds(sindex, 1) : this.quill.getBounds(sindex);
+    if (offset == 0 && bounds.width == 0 && endIndex > 0 && startIndex == endIndex) {
+      this.quill.insertText(endIndex, '\ufeff');
+      bounds = this.quill.getBounds(endIndex + 1);
+      this.quill.deleteText(endIndex + 1, 1);
+    }
+    const top = flag ? bounds.bottom : bounds.top;
+    // if (!flag) {
+    //   bounds.left = bounds.left - bounds.width;
+    //   bounds.right = bounds.right - bounds.width;
+    // }
+    // const node = leaf.domNode;
+    // let offsetX = bounds.left;
+    // if (node) {
+    //   const siblingOffset = (node.nextSibling && node.nextSibling.offsetLeft) ||
+    //     (node.previousSibling && node.previousSibling.offsetLeft);
+    //   offsetX = node.offsetLeft || siblingOffset || node.parentNode.offsetLeft;
+    // }
 
-    const endBounds = this.quill.getBounds(endIndex);
-    cursor.updateCaret(endBounds, containerRectangle);
-
+    bounds.top = top;
+    // bounds.left = offsetX;
+    cursor.updateCaret(bounds, containerRectangle);
     const ranges = this._lineRanges(cursor, startLeaf, endLeaf);
     const selectionRectangles = ranges
       .reduce((rectangles, range) => rectangles.concat(Array.from(RangeFix.getClientRects(range))), []);

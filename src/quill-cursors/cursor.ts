@@ -105,16 +105,22 @@ export default class Cursor {
     setTimeout(() => this._flagEl.classList.remove(Cursor.NO_DELAY_CLASS), this._hideSpeedMs);
   }
 
-  public updateCaret(rectangle: ClientRect, container: ClientRect): void {
+  // public updateCaret(rectangle: ClientRect, container: ClientRect): void {
+  public updateCaret(rectangle: ClientRect, _container: ClientRect): void {
+    // console.log('left = ' + rectangle.left + ' top = ' +
+    // rectangle.top + ' right = ' + rectangle.right + ' bottom = ' +
+    // rectangle.bottom + ' width = ' +
+    // rectangle.width + ' height = ' + rectangle.height);
     this._caretEl.style.top = `${rectangle.top}px`;
     this._caretEl.style.left = `${rectangle.left}px`;
-    this._caretEl.style.height = `${rectangle.height}px`;
+    // this._caretEl.style.height = `${rectangle.height}px`;
+    this._caretEl.style.width = `${rectangle.width}px`;
 
-    if (this._positionFlag) {
-      this._positionFlag(this._flagEl, rectangle, container);
-    } else {
-      this._updateCaretFlag(rectangle, container);
-    }
+    // if (this._positionFlag) {
+    //   this._positionFlag(this._flagEl, rectangle, container);
+    // } else {
+    //   this._updateCaretFlag(rectangle, container);
+    // }
   }
 
   public updateSelection(selections: ClientRect[], container: ClientRect): void {
